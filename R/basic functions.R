@@ -3,15 +3,11 @@
 # (2) calculate the parameters of a log-linear model of
 #     this partition
 # (3) update the partition by moving one node between blocks
+#     or swapping the block membership of two nodes
 #     so that the fit of the log linear model is maximized
 # (4) repeat (3) until no further improvement is possible
 #     and return the partition and the fit
-# (5) make a huge jump by splitting the existing blocks
-#     and randomly remerge them
-# (6) repeat (2) and (3) until no further improvement is possible and
-#     return the partition and the fit
-# (7) repeat (5) and (6) for a given number of iterations or
-#     until the same partition is found three times in a row
+# (5) build a sampler that samples likely partitions
 
 # Partition a square matrix into blocks
 # if the number of nodes does not divide into blocks,
