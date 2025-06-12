@@ -2,7 +2,7 @@
 .Rhistory
 .Rapp.history
 .DS_Store
-.Rproj
+stocBM.Rproj
 
 # Session Data files
 .RData
