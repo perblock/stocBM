@@ -51,4 +51,4 @@ test_mat[25:40, 16:24] <- test_mat[25:40, 16:24] + 5  # Add some structure
 repeat_result <- repeat_sample_likely_partition(test_mat, n_blocks = 3, n_runs = 10, n_iter = 1000)
 # Get good partitions from the repeat result
 res <- get_good_partitions(repeat_result, max_iter = 100)
-
+res
