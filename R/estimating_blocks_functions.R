@@ -1,14 +1,21 @@
+###### Functions to estimate Blocks ######
 
-
-
-
-
-# take all the partitions from the repeat_sample_likely_partition function
-# for each partition create a matrix indicating whether
-# each pair of nodes is in the same partition
-# then sum over all these matrices and divide by the number of runs
-# of the repeat_sample_likely_partition function
-# return the final matrix and plot it as a heatmap
+#' average_partition_matrix
+#'
+#' Calculate the average partition matrix from multiple runs of the
+#' `repeat_sample_likely_partition` function.
+#' This function takes the results from `repeat_sample_likely_partition`
+#' and computes a matrix indicating the average likelihood of each pair of nodes
+#' being in the same partition.
+#' @param repeat_result A list containing the results from `repeat_sample_likely_partition`.
+#' @return A matrix representing the average partition likelihood between nodes.
+#' @examples
+#' # Create a square matrix with 40 rows and 40 columns
+#' test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
+#' # Repeat sampling a likely partition of the matrix with 2 blocks for 10 runs
+#' repeat_result <- repeat_sample_likely_partition(test_mat, n_blocks = 2, n_runs = 10, n_iter = 1000)
+#' avg_matrix <- average_partition_matrix(repeat_result)
+#' @export
 average_partition_matrix <- function(repeat_result) {
   partitions <- repeat_result$partitions
   n_runs <- length(partitions)
@@ -34,16 +41,24 @@ average_partition_matrix <- function(repeat_result) {
 }
 
 
-
-
-# First use the update_partition_node_swap function
-# and then the update_partition_node_move function
-# until no further improvement in fit is possible
-# and return the partition and the fit
-# print the number of iterations and allow to set a maximum number of iterations
-# use the partition_square_matrix function so that
-# the only arguments are mobility_table and max_iterations
-# only writing the function not the whole code
+#' repeat_until_no_improvement
+#'
+#' Repeatedly update the partition of a square matrix
+#' until no further improvement in fit is possible.
+#' This function uses the `update_partition_node_swap` and
+#' `update_partition_node_move` functions to
+#' improve the partition iteratively.
+#' @param mobility_table A square matrix representing the mobility table.
+#' @param init_partition An optional initial partition vector.
+#' @param n_blocks The number of blocks to partition the matrix into.
+#' @param max_iter The maximum number of iterations to perform.
+#' @return A list containing the final partition and the fit of the model.
+#' @examples
+#' # Create a square matrix with 40 rows and 40 columns
+#' test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
+#' # Update partition and repeat until no improvement in fit is possible
+#' repeat_until_no_improvement(test_mat, n_blocks = 2, max_iter = 100)
+#' @export
 repeat_until_no_improvement <- function(mobility_table, init_partition = NULL,
                                         n_blocks = 2, max_iter = 100) {
   if(is.null(init_partition)){
