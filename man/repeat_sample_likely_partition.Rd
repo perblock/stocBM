@@ -21,8 +21,8 @@ repeat_sample_likely_partition(
 \item{n_iter}{The number of iterations to run the sampling in each run.}
 }
 \value{
-A list containing two lists: partitions and fits, where each list contains the
-partition and fit from each run.
+A list containing two lists (partitions and fits), where each list contains the
+partition and fit from each run; as well as the mobility table.
 }
 \description{
 Repeat the function sample_likely_partition for a specified number of runs

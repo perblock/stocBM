@@ -108,3 +108,58 @@ repeat_until_no_improvement <- function(mobility_table, init_partition = NULL,
   return(list(partition = partition, fit = fit))
 }
 
+
+#' get_good_partitions
+#'
+#' Get good partitions from the results of `repeat_sample_likely_partition`.
+#' This function calculates the log-linear model for each partition,
+#' repeats the partition update until no improvement is found,
+#' and returns the best partition and its fit.
+#' @param repeat_result A list containing the results from `repeat_sample_likely_partition`.
+#' @param max_iter The maximum number of iterations to perform for each partition.
+#' @return A list containing the number of unique partitions, all fits, the best partition,
+#' and the best fit.
+#' @examples
+#' # Create a square matrix with 40 rows and 40 columns
+#' test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
+#' test_mat[1:15, 1:15] <- test_mat[1:15, 1:15] + 2  # Add some structure
+#' test_mat[25:40, 16:24] <- test_mat[25:40, 16:24] + 5  # Add some structure
+#' # Repeat sampling a likely partition of the matrix with 3 blocks for 10 runs
+#' repeat_result <- repeat_sample_likely_partition(test_mat, n_blocks = 3, n_runs = 10, n_iter = 1000)
+#' # Get good partitions from the repeat result
+#' get_good_partitions(repeat_result, max_iter = 100)
+#' @export
+get_good_partitions <- function(repeat_result,
+                                max_iter = 100) {
+  n_blocks <- length(unique(repeat_result$partitions[[1]]))
+  partitions <- repeat_result$partitions
+  unique_partitions <- list()
+  fits <- list()
+
+  for (i in seq_along(partitions)) {
+    partition <- partitions[[i]]
+    fit <- calculate_log_linear_model(repeat_result$mobility_table,
+                                      partition)
+
+    result <- repeat_until_no_improvement(repeat_result$mobility_table,
+                                          partition, n_blocks, max_iter)
+
+    unique_partitions[[i]] <- result$partition
+    fits[[i]] <- result$fit
+  }
+
+  unique_partitions <- unique(unique_partitions)
+  n_unique_partitions <- length(unique_partitions)
+
+  best_partition_index <- which.min(sapply(fits, function(x) x$fit))
+  best_partition <- unique_partitions[[best_partition_index]]
+  best_fit <- fits[[best_partition_index]]
+
+  return(list(n_unique_partitions = n_unique_partitions,
+              all_fits = unlist(fits),
+              best_partition = best_partition,
+              best_fit = best_fit))
+}
+
+
+

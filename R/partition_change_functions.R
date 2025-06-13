@@ -280,8 +280,8 @@ sample_likely_partition <- function(mobility_table, initial_partition = NULL,
 #' @param n_blocks The number of blocks to partition the matrix into.
 #' @param n_runs The number of runs to perform.
 #' @param n_iter The number of iterations to run the sampling in each run.
-#' @return A list containing two lists: partitions and fits, where each list contains the
-#' partition and fit from each run.
+#' @return A list containing two lists (partitions and fits), where each list contains the
+#' partition and fit from each run; as well as the mobility table.
 #' @examples
 #' # Create a square matrix with 40 rows and 40 columns
 #' test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
@@ -309,5 +309,7 @@ repeat_sample_likely_partition <- function(mobility_table, n_blocks = 2, n_runs 
     fits[[run]] <- result$fit
   }
 
-  return(list(partitions = partitions, fits = fits))
+  return(list(partitions = partitions, fits = fits,
+              mobility_table = mobility_table))
 }
+
