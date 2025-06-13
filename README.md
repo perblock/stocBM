@@ -8,3 +8,26 @@ mobility networks; that is, for a cross-classification matrix in which
 rowsums differ between rows AND rowsums and columnsums differ. In other
 words, a stochastic blockmodel for directed, weighted networks, which is
 conditional on the in- and out-degree distribution.
+
+## Installation
+
+You can install the current version of stocBM from GitHub using:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("perblock/stocBM")
+```
+
+## Small example
+
+First, we create a matrix of counts as an example and add some
+structure:
+
+``` r
+test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
+test_mat[1:15, 1:15] <- test_mat[1:15, 1:15] + 2  # Add some structure
+test_mat[25:40, 16:24] <- test_mat[25:40, 16:24] + 5  # Add some structure
+
+# Look at the first rows and columns
+test_mat[1:10, 1:10]
+```
