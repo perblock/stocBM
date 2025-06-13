@@ -42,3 +42,13 @@ sample_likely_partition(test_mat, n_blocks = 3)
 repeat_sample_likely_partition(test_mat, n_blocks = 3, n_runs = 10)
 
 
+
+# Create a square matrix with 40 rows and 40 columns
+test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
+test_mat[1:15, 1:15] <- test_mat[1:15, 1:15] + 2  # Add some structure
+test_mat[25:40, 16:24] <- test_mat[25:40, 16:24] + 5  # Add some structure
+# Repeat sampling a likely partition of the matrix with 2 blocks for 10 runs
+repeat_result <- repeat_sample_likely_partition(test_mat, n_blocks = 3, n_runs = 10, n_iter = 1000)
+# Get good partitions from the repeat result
+res <- get_good_partitions(repeat_result, max_iter = 100)
+
