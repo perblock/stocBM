@@ -35,6 +35,8 @@ remotes::install_github("perblock/stocBM")
 First, we create a matrix of counts as an example and add some structure:
 
 ``` {r}
+library(stocBM)
+
 test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
 test_mat[1:15, 1:15] <- test_mat[1:15, 1:15] + 2  # Add some structure
 test_mat[25:40, 16:24] <- test_mat[25:40, 16:24] + 5  # Add some structure
@@ -42,6 +44,35 @@ test_mat[25:40, 16:24] <- test_mat[25:40, 16:24] + 5  # Add some structure
 # Look at the first rows and columns
 test_mat[1:10, 1:10]
 ```
+
+
+
+Now we can run a simple first test to get a (probably) preliminary partitioning. In case the partitions are very clear, this might already
+be pretty good.
+
+``` {r}
+init_res <- repeat_until_no_improvement(test_mat, n_blocks = 3, max_iter = 1000)
+init_res$partition
+```
+
+Ok, that looks not ideal, there are some misclassified nodes.
+Next, we do a more extensive sampling of different good partitions
+and a plot of average same block membership:
+
+```{r}
+repeat_result <- repeat_sample_likely_partition(test_mat, n_blocks = 3, n_runs = 10, n_iter = 1000)
+repeat_result$partitions
+
+average_partition_matrix(repeat_result)
+```
+
+Now that looks better. We can also use this output to optimise the different sampled partitions to find the best (from our current partitioning).
+
+```{r}
+get_good_partitions(repeat_result)
+```
+
+This tells us how many different solutions are found (fewer = better) and what the best partition is.
 
 
 
