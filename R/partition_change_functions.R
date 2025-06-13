@@ -252,7 +252,9 @@ sample_likely_partition <- function(mobility_table, initial_partition = NULL,
     iter <- iter + 1
 
     # Print the current iteration number and fit
-    cat("Iteration:", iter, "Fit (AIC):", fit$fit, "\n")
+    if (iter %% 100 == 0) {  # Print every 100 iterations
+      cat("Iteration:", iter, "Fit (AIC):", fit$fit, "\n")
+    }
 
     # Randomly choose to either move or swap nodes
     if (runif(1) < 0.5) {
