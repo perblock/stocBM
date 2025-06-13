@@ -1,4 +1,4 @@
-# A script to test the functions in the R file 'basic_functions.R'
+##### WARNING: This is an example script for testing purposes only. ######
 
 # create a matrix with 40 rows and 40 columns;
 # numbers in the matrix are integers that follow a poisson distribution
@@ -22,9 +22,7 @@ calculate_log_linear_model(test_mat, init_partition2, include_coeffs = TRUE)$fit
 calculate_log_linear_model(test_mat, init_partition2)$fit
 
 calculate_log_linear_model(test_mat, init_partition)$fit - calculate_log_linear_model(test_mat, init_partition2)$fit
-
 calculate_log_linear_model(test_mat, init_partition, include_coeffs = TRUE)$fit - calculate_log_linear_model(test_mat, init_partition2, include_coeffs = TRUE)$fit
-
 
 
 # use the function 'calculate_fit' from the R file 'basic_functions.R'
