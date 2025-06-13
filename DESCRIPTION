@@ -4,9 +4,10 @@ Title: Stochastic Blockmodelling for Mobility Networks
 Version: 0.0.0.900
 Authors@R: c(person("Per", "Block", role = c("cre", "aut", "cph"), 
                     email = "block@soziologie.uzh.ch", 
-                    comment = c(ORCID = "0000-0002-7583-2392"))
+                    comment = c(ORCID = "0000-0002-7583-2392")))
 Description: More about what it does (maybe more than one line).
     Continuation lines should be indented.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 7.3.2
