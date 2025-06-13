@@ -1,8 +1,23 @@
-# update the calculated partition by swapping the block membership of two nodes
-# so that the fit of the log linear model
-# in which block membership predicts cell counts of the
-# square matrix is maximized
-# only writing the function not the whole code
+###### Functions for changing partitions ######
+
+#' update_partition_node_swap
+#'
+#' Update the partition of a square matrix by swapping the block membership of two nodes.
+#' This function iteratively checks all pairs of nodes and swaps the block membership
+#' of the pair that results in the best fit of the log-linear model that predicts cell counts
+#' of the square matrix based on block membership.
+#'
+#' @param mobility_table A square matrix representing the mobility table.
+#' @param partition A vector representing the current partition of the square matrix into blocks.
+#' @return A list containing the updated partition and the fit of the log-linear model.
+#' @examples
+#' # Create a square matrix with 40 rows and 40 columns
+#' test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
+#' # Partition the matrix into 2 blocks
+#' init_partition <- partition_square_matrix(test_mat, n_blocks = 2)
+#' # Update the partition by swapping nodes
+#' update_partition_node_swap(test_mat, init_partition)
+#' @export
 update_partition_node_swap <- function(mobility_table, partition){
   n <- nrow(mobility_table)
   n_blocks <- length(unique(partition))
@@ -24,6 +39,11 @@ update_partition_node_swap <- function(mobility_table, partition){
       # Calculate the fit of the new partition
       new_fit <- calculate_log_linear_model(mobility_table, new_partition)
 
+      # if the fit of the new partition cannot be calculated, skip
+      if (is.null(new_fit) || is.na(new_fit$fit)) {
+        next
+      }
+
       # If the new fit is better, update the best fit and partition
       if (new_fit$fit < best_fit$fit) {
         best_fit <- new_fit
@@ -35,12 +55,26 @@ update_partition_node_swap <- function(mobility_table, partition){
   return(list(partition = best_partition, fit = best_fit))
 }
 
-# update the calculated partition by changing the block membership of one nodes
-# so that the fit of the log linear model
-# in which block membership predicts cell counts of the
-# square matrix is maximized
-# do not allow moving a node so that one partition has fewer than 4 nodes
-# only writing the function not the whole code
+
+
+#' update_partition_node_move
+#'
+#' Update the partition of a square matrix by moving the block membership of one node.
+#' This function iteratively checks all nodes and moves a node to a different block
+#' that results in the best fit of the log-linear model that predicts cell counts
+# of the square matrix based on block membership.
+#' @param mobility_table A square matrix representing the mobility table.
+#' @param partition A vector representing the current partition of the
+#' square matrix into blocks.
+#' @return A list containing the updated partition and the fit of the log-linear model.
+#' @examples
+#' # Create a square matrix with 40 rows and 40 columns
+#' test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
+#' # Partition the matrix into 2 blocks
+#' init_partition <- partition_square_matrix(test_mat, n_blocks = 2)
+#' # Update the partition by moving a node
+#' update_partition_node_move(test_mat, init_partition)
+#' @export
 update_partition_node_move <- function(mobility_table, partition) {
   n <- nrow(mobility_table)
   n_blocks <- length(unique(partition))
@@ -65,6 +99,13 @@ update_partition_node_move <- function(mobility_table, partition) {
       # Calculate the fit of the new partition
       new_fit <- calculate_log_linear_model(mobility_table, new_partition)
 
+      # if the fit of the new partition cannot be calculated, skip
+      if (is.null(new_fit) || is.na(new_fit$fit)) {
+        next
+      }
+
+      # skip step if update cannot be calculated
+
       # If the new fit is better, update the best fit and partition
       if (new_fit$fit < best_fit$fit) {
         best_fit <- new_fit
@@ -76,13 +117,25 @@ update_partition_node_move <- function(mobility_table, partition) {
   return(list(partition = best_partition, fit = best_fit))
 }
 
-
-# Propose an update of the calculated partition
-# by swapping the block membership of two nodes
-# Accept the update with a probability that is proportional to the
-# exp() of the difference in fit of the log linear model of the
-# current partition and the proposed partition.
-# only writing the function not the whole code
+#' propose_partition_update_swap
+#'
+#' Propose an update of the calculated partition
+#' by swapping the block membership of two nodes.
+#' Accept the update with a probability that is proportional to the
+#' exp() of the difference in fit of the log-linear model of the
+#' current partition and the proposed partition.
+#' @param mobility_table A square matrix representing the mobility table.
+#' @param partition A vector representing the current partition of the
+#' square matrix into blocks.
+#' @return A list containing the updated partition and the fit of the log-linear model.
+#' @examples
+#' # Create a square matrix with 40 rows and 40 columns
+#' test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
+#' # Partition the matrix into 2 blocks
+#' init_partition <- partition_square_matrix(test_mat, n_blocks = 2)
+#' # Propose an update of the partition by swapping nodes
+#' propose_partition_update_swap(test_mat, init_partition)
+#' @export
 propose_partition_update_swap <- function(mobility_table, partition) {
   n <- nrow(mobility_table)
   current_fit <- calculate_log_linear_model(mobility_table, partition)
@@ -98,6 +151,11 @@ propose_partition_update_swap <- function(mobility_table, partition) {
   # Calculate the fit of the new partition
   new_fit <- calculate_log_linear_model(mobility_table, new_partition)
 
+  # if the fit of the new partition cannot be calculated, reject the update
+  if (is.null(new_fit) || is.na(new_fit$fit)) {
+    return(list(partition = partition, fit = current_fit))
+  }
+
   # Calculate the difference in fit
   fit_diff <- current_fit$fit/2 - new_fit$fit/2
 
@@ -110,12 +168,22 @@ propose_partition_update_swap <- function(mobility_table, partition) {
 }
 
 
-# Propose an update of the calculated partition
-# by moving the block membership of one nodes
-# Accept the update with a probability that is proportional to the
-# exp() of the difference in fit of the log linear model of the
-# current partition and the proposed partition.
-# only writing the function not the whole code
+#' propose_partition_update_move
+#'
+#' Propose an update of the calculated partition
+#' by moving the block membership of one node.
+#' Accept the update with a probability that is proportional to the
+#' exp() of the difference in fit of the log-linear model of the
+#' current partition and the proposed partition.
+#' @param mobility_table A square matrix representing the mobility table.
+#' @param partition A vector representing the current partition of the
+#' square matrix into blocks.
+#' @return A list containing the updated partition and the fit of the log-linear model.
+#' #' @examples
+#' # Create a square matrix with 40 rows and 40 columns
+#' test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
+#' # Partition the matrix into 2 blocks
+#' init_partition <- partition_square_matrix(test_mat, n_blocks = 2)
 propose_partition_update_move <- function(mobility_table, partition) {
   n <- nrow(mobility_table)
   current_fit <- calculate_log_linear_model(mobility_table, partition)
@@ -135,6 +203,11 @@ propose_partition_update_move <- function(mobility_table, partition) {
   # Calculate the fit of the new partition
   new_fit <- calculate_log_linear_model(mobility_table, new_partition)
 
+  # if the fit of the new partition cannot be calculated, reject the update
+  if (is.null(new_fit) || is.na(new_fit$fit)) {
+    return(list(partition = partition, fit = current_fit))
+  }
+
   # Calculate the difference in fit
   fit_diff <- current_fit$fit/2 - new_fit$fit/2
 
@@ -146,12 +219,23 @@ propose_partition_update_move <- function(mobility_table, partition) {
   }
 }
 
-
-# Use either propose_partition_update_move or propose_partition_update_swap, randomly
-# for a specified number of iterations
-# and return the partition and the fit
-# print the number of iterations
-# only writing the function not the whole code
+#' sample_likely_partition
+#'
+#' Sample a likely partition of the square matrix
+#' Use either propose_partition_update_move or propose_partition_update_swap,
+#' randomly for a specified number of iterations
+#' and return the partition and the fit
+#' @param mobility_table A square matrix representing the mobility table.
+#' @param initial_partition A vector representing the initial partition of the square matrix into blocks.
+#' @param n_blocks The number of blocks to partition the matrix into.
+#' @param n_iter The number of iterations to run the sampling.
+#' @return A list containing the sampled partition and the fit of the log-linear model.
+#' @examples
+#' # Create a square matrix with 40 rows and 40 columns
+#' test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
+#' # Sample a likely partition of the matrix with 2 blocks
+#' sample_likely_partition(test_mat, n_blocks = 2, n_iter = 1000)
+#' @export
 sample_likely_partition <- function(mobility_table, initial_partition = NULL,
                                     n_blocks = 2, n_iter = 1000) {
   if(is.null(initial_partition)) {
@@ -186,10 +270,24 @@ sample_likely_partition <- function(mobility_table, initial_partition = NULL,
 }
 
 
-# Repeat the function sample_likely_partition for a specified number of runs
-# the first time with a random partition
-# and then with the partition from the previous run
-# return the partition and the fit of each run as two lists
+#' repeat_sample_likely_partition
+#'
+#' Repeat the function sample_likely_partition for a specified number of runs
+#' the first time with a random partition
+#' and then with the partition from the previous run
+#' return the partition and the fit of each run as two lists
+#' @param mobility_table A square matrix representing the mobility table.
+#' @param n_blocks The number of blocks to partition the matrix into.
+#' @param n_runs The number of runs to perform.
+#' @param n_iter The number of iterations to run the sampling in each run.
+#' @return A list containing two lists: partitions and fits, where each list contains the
+#' partition and fit from each run.
+#' @examples
+#' # Create a square matrix with 40 rows and 40 columns
+#' test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
+#' # Repeat sampling a likely partition of the matrix with 2 blocks for 10 runs
+#' repeat_sample_likely_partition(test_mat, n_blocks = 2, n_runs = 10, n_iter = 1000)
+#' @export
 repeat_sample_likely_partition <- function(mobility_table, n_blocks = 2, n_runs = 10, n_iter = 100) {
   partitions <- vector("list", n_runs)
   fits <- vector("list", n_runs)
