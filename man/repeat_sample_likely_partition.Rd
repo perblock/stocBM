@@ -14,7 +14,9 @@ repeat_sample_likely_partition(
 \arguments{
 \item{mobility_table}{A square matrix representing the mobility table.}
 
-\item{n_blocks}{The number of blocks to partition the matrix into.}
+\item{n_blocks}{The number of blocks to partition the matrix into.
+If two numbers are provided, the first number is the number of blocks for rows
+and the second number is the number of blocks for columns.}
 
 \item{n_runs}{The number of runs to perform.}
 

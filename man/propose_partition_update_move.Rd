@@ -4,21 +4,20 @@
 \alias{propose_partition_update_move}
 \title{propose_partition_update_move}
 \usage{
-propose_partition_update_move(mobility_table, partition)
+propose_partition_update_move(mobility_table, partition, move_rows = NULL)
 }
 \arguments{
 \item{mobility_table}{A square matrix representing the mobility table.}
 
-\item{partition}{A vector representing the current partition of the
-square matrix into blocks.}
+\item{partition}{A list containing two vectors: one for the row partition
+and one for the column partition. If only one vector is provided,
+the rows and columns are partitioned into the same blocks.}
+
+\item{move_rows}{A boolean indicating whether to move the block membership of rows (TRUE)
+or columns (FALSE).}
 }
 \value{
 A list containing the updated partition and the fit of the log-linear model.
-#' @examples
-# Create a square matrix with 40 rows and 40 columns
-test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
-# Partition the matrix into 2 blocks
-init_partition <- partition_square_matrix(test_mat, n_blocks = 2)
 }
 \description{
 Propose an update of the calculated partition
@@ -26,4 +25,15 @@ by moving the block membership of one node.
 Accept the update with a probability that is proportional to the
 exp() of the difference in fit of the log-linear model of the
 current partition and the proposed partition.
+In case the rows and columns of the square matrix are partitioned into different blocks,
+this function will either move the block membership of one node wihtin rows or columns,
+depending on a parameter or randomly.
+}
+\examples{
+# Create a square matrix with 40 rows and 40 columns
+test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
+# Partition the matrix into 2 blocks for rows and 3 blocks for columns
+init_partition <- partition_square_matrix(test_mat, n_blocks = c(2, 3))
+# Propose an update of the partition by moving a node
+propose_partition_update_move(test_mat, init_partition, move_rows = TRUE)
 }

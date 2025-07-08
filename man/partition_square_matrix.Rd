@@ -9,14 +9,19 @@ partition_square_matrix(mobility_table, n_blocks)
 \arguments{
 \item{mobility_table}{A square matrix representing the mobility table.}
 
-\item{n_blocks}{The number of blocks to partition the matrix into.}
+\item{n_blocks}{The number of blocks to partition the matrix into. If
+this is a vector of two numbers, the first number is the number of
+blocks for the rows and the second number is the number of blocks
+for the columns.}
 }
 \value{
-A vector representing the partition of the square matrix into blocks.
+A vector representing the partition(s) into blocks.
 }
 \description{
-Randomly partition a square matrix into a specified number of
-(approximately) equal sized blocks.
+randomly partition a square matrix into a specified number of
+(approximately) equal sized blocks;
+rows and columns can be partitioned into the same
+number of blocks, or different numbers of blocks.
 }
 \examples{
 # Create a square matrix with 40 rows and 40 columns

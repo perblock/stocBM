@@ -4,27 +4,32 @@
 \alias{update_partition_node_move}
 \title{update_partition_node_move}
 \usage{
-update_partition_node_move(mobility_table, partition)
+update_partition_node_move(mobility_table, partition, move_rows = NULL)
 }
 \arguments{
 \item{mobility_table}{A square matrix representing the mobility table.}
 
-\item{partition}{A vector representing the current partition of the
-square matrix into blocks.}
-}
-\value{
-A list containing the updated partition and the fit of the log-linear model.
+\item{partition}{A vector representing the current partition of the square matrix into blocks.
+if the rows and columns are partitioned into different blocks,
+the partition should be a list with two vectors: one for the rows and one for the columns.}
+
+\item{move_rows}{A boolean indicating whether to swap the block membership of rows (TRUE)
+or columns (FALSE). Default is NULL, which means it will be chosen randomly.}
 }
 \description{
 Update the partition of a square matrix by moving the block membership of one node.
 This function iteratively checks all nodes and moves a node to a different block
 that results in the best fit of the log-linear model that predicts cell counts
+of the square matrix based on block membership.
+In case the rows and columns of the square matrix are partitioned into different blocks,
+this function will either move the block membership of one node in rows or columns,
+depending on a parameter or randomly.
 }
 \examples{
 # Create a square matrix with 40 rows and 40 columns
 test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
 # Partition the matrix into 2 blocks
-init_partition <- partition_square_matrix(test_mat, n_blocks = 2)
+init_partition <- partition_square_matrix(test_mat, n_blocks = c(2,3))
 # Update the partition by moving a node
 update_partition_node_move(test_mat, init_partition)
 }

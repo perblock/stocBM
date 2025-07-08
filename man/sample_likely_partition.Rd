@@ -14,9 +14,12 @@ sample_likely_partition(
 \arguments{
 \item{mobility_table}{A square matrix representing the mobility table.}
 
-\item{initial_partition}{A vector representing the initial partition of the square matrix into blocks.}
+\item{initial_partition}{A vector representing the initial partition of the
+square matrix into blocks. If NULL, a random partition will be created.}
 
-\item{n_blocks}{The number of blocks to partition the matrix into.}
+\item{n_blocks}{The number of blocks to partition the matrix into.
+If two numbers are provided, the first number is the number of blocks for rows
+and the second number is the number of blocks for columns.}
 
 \item{n_iter}{The number of iterations to run the sampling.}
 }

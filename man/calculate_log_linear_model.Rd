@@ -9,8 +9,9 @@ calculate_log_linear_model(mobility_table, partition, include_coeffs = FALSE)
 \arguments{
 \item{mobility_table}{A square matrix representing the mobility table.}
 
-\item{partition}{A vector representing the partition of the square matrix
-into blocks.}
+\item{partition}{A list containing two vectors: one for the row partition
+and one for the column partition. If only one vector is provided,
+the rows and columns are partitioned into the same blocks.}
 
 \item{include_coeffs}{A boolean indicating whether to return the
 coefficients of the model.}
@@ -19,18 +20,17 @@ coefficients of the model.}
 A list containing the coefficients of the model (if `include_coeffs` is TRUE)
 and the fit of the model (AIC) - if `include_coeffs` is FALSE,
 the returned fit is includes an unknown constant.
+# @examples
+# Create a square matrix with 40 rows and 40 columns
+test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
+# Partition the matrix into 2 blocks for rows and 3 blocks for columns
+partition <- partition_square_matrix(test_mat, n_blocks = c(2, 3))
+# Calculate the log-linear model
+calculate_log_linear_model(test_mat, partition, include_coeffs = TRUE)
 }
 \description{
 Calculate the parameters of a log-linear model
 in which block membership predicts cell counts of the
 square matrix;
-optionally return the coefficients of the model
-}
-\examples{
-# Create a square matrix with 40 rows and 40 columns
-test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
-# Partition the matrix into 2 blocks
-partition <- partition_square_matrix(test_mat, n_blocks = 2)
-# Calculate the log-linear model
-calculate_log_linear_model(test_mat, partition, include_coeffs = TRUE)
+the rows and columns can be members of different blocks.
 }
