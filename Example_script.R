@@ -102,6 +102,28 @@ res <- get_good_partitions(repeat_result, max_iter = 100)
 res
 
 
+# now multipartite partitions
+test_aa <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
+test_aa[1:15, 1:15] <- test_aa[1:15, 1:15] + 1  # Add some structure
+test_aa[25:40, 16:24] <- test_aa[25:40, 16:24] + 1  # Add some structure
+test_aa[16:24, 25:40] <- test_aa[16:24, 25:40] + 1  # Add some structure
 
+test_ab <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
+test_ab[1:15, 1:20] <- test_aa[1:15, 1:20] + 2  # Add some structure
+test_ab[16:24, 1:20] <- test_aa[16:24, 1:20] + 2  # Add some structure
+test_ab[25:40, 21:40] <- test_aa[25:40, 21:40] + 2  # Add some structure
+
+test_bb <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
+test_bb[1:20, 1:20] <- test_bb[1:20, 1:20] + 1  # Add some structure
+test_bb[21:40, 21:40] <- test_bb[21:40, 21:40] + 1  # Add some structure
+
+repeat_result <- repeat_sample_likely_multipartite_partition(test_aa, test_ab, test_bb,
+                                                             n_blocks = c(3,2),
+                                                             n_runs = 30, n_iter = 1000)
+multipartite_repeat_until_no_improvement(test_aa, test_ab, test_bb,
+                                         max_iter = 20, init_partition = repeat_result$partitions[[28]])
+
+res <- get_good_multipartite_partitions(repeat_result)
+res
 
 
