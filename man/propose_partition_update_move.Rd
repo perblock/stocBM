@@ -4,7 +4,7 @@
 \alias{propose_partition_update_move}
 \title{propose_partition_update_move}
 \usage{
-propose_partition_update_move(mobility_table, partition, move_rows = NULL)
+propose_partition_update_move(mobility_table, partition, swap_rows = NULL)
 }
 \arguments{
 \item{mobility_table}{A square matrix representing the mobility table.}
@@ -13,7 +13,7 @@ propose_partition_update_move(mobility_table, partition, move_rows = NULL)
 and one for the column partition. If only one vector is provided,
 the rows and columns are partitioned into the same blocks.}
 
-\item{move_rows}{A boolean indicating whether to move the block membership of rows (TRUE)
+\item{swap_rows}{A boolean indicating whether to move the block membership of rows (TRUE)
 or columns (FALSE).}
 }
 \value{
@@ -35,5 +35,5 @@ test_mat <- matrix(rpois(1600, lambda = 10), nrow = 40, ncol = 40)
 # Partition the matrix into 2 blocks for rows and 3 blocks for columns
 init_partition <- partition_square_matrix(test_mat, n_blocks = c(2, 3))
 # Propose an update of the partition by moving a node
-propose_partition_update_move(test_mat, init_partition, move_rows = TRUE)
+propose_partition_update_move(test_mat, init_partition, swap_rows = TRUE)
 }
